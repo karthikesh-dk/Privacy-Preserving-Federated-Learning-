@@ -1,0 +1,14 @@
+{
+  "strategy": "FedAvg",
+  "num_rounds": 12,
+  "num_clients": 8,
+  "local_epochs": 3,
+  "payload_kb_per_client": 13.27,
+  "total_communication_mb": 2.49,
+  "final_loss": 0.0336,
+  "final_mae": 0.1321,
+  "final_rmse": 0.1834,
+  "final_r2": 0.2011,
+  "model_path": "experiments/results/global_fedavg_model.pt",
+  "log_path": "experiments/results/fedavg_log.csv"
+}

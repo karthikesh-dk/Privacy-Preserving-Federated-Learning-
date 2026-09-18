@@ -1,0 +1,30 @@
+{
+  "xgboost": {
+    "model_name": "Centralized XGBoost Regressor",
+    "num_train_samples": 6400,
+    "num_test_samples": 1600,
+    "mae": 0.0861,
+    "rmse": 0.1339,
+    "mse": 0.0179,
+    "r2": 0.5738
+  },
+  "lightgbm": {
+    "model_name": "Centralized LightGBM Regressor",
+    "num_train_samples": 6400,
+    "num_test_samples": 1600,
+    "mae": 0.0858,
+    "rmse": 0.1335,
+    "mse": 0.0178,
+    "r2": 0.5769
+  },
+  "mlp_centralized": {
+    "model_name": "Centralized PyTorch MLP (d->64->32->1)",
+    "num_train_samples": 6400,
+    "num_test_samples": 1600,
+    "epochs": 25,
+    "mae": 0.0872,
+    "rmse": 0.1347,
+    "mse": 0.0181,
+    "r2": 0.5691
+  }
+}
