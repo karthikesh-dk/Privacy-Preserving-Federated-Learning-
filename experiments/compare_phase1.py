@@ -8,8 +8,8 @@ Loads benchmark logs and creates:
 """
 
 import os
+import csv
 import json
-import pandas as pd
 import matplotlib
 matplotlib.use("Agg")  # Non-interactive backend
 import matplotlib.pyplot as plt
@@ -20,9 +20,9 @@ def generate_phase1_comparison(
     fedavg_log_path: str = "experiments/results/fedavg_log.csv",
     chart_output_path: str = "experiments/results/convergence_curve.png"
 ):
-    print("\n" + "=" * 80)
+    print("\n" + "=" * 88)
     print(" PHASE I COMPARATIVE EVALUATION REPORT: CENTRALIZED VS FEDERATED LEARNING")
-    print("=" * 80)
+    print("=" * 88)
 
     # 1. Load JSON results
     if not os.path.exists(centralized_path):
@@ -52,42 +52,52 @@ def generate_phase1_comparison(
         print(f"{name:<36} | {paradigm:<16} | {mae:<8.4f} | {rmse:<8.4f} | {r2:<8.4f}")
     print("-" * 88)
 
-    print("\n[Analysis / Key Takeaways]:")
+    print("\n[Academic Findings & Analytical Takeaways]:")
     print("1. Data Locality: Under Federated FedAvg, zero raw social media posts or user engagement")
     print("   records ever left the 8 client nodes. Only model weight updates were transmitted.")
     print(f"2. Utility Retention: Federated FedAvg achieved an MAE of {fed_res['final_mae']:.4f} and RMSE of {fed_res['final_rmse']:.4f},")
-    print(f"   successfully learning collaborative cross-creator engagement dynamics without centralization.")
+    print("   successfully learning collaborative cross-creator engagement dynamics without centralization.")
     print(f"3. Communication Efficiency: Total payload transferred was {fed_res.get('total_communication_mb', 'N/A')} MB across 12 rounds.\n")
 
     # 3. Generate Matplotlib Convergence Plot
     if os.path.exists(fedavg_log_path):
-        log_df = pd.read_csv(fedavg_log_path)
-        
-        plt.style.use("seaborn-v0_8-whitegrid" if "seaborn-v0_8-whitegrid" in plt.style.available else "default")
+        rounds = []
+        avg_train_loss = []
+        test_loss = []
+        test_mae = []
+        test_rmse = []
+
+        with open(fedavg_log_path, "r") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                rounds.append(int(row["round"]))
+                avg_train_loss.append(float(row["avg_train_loss"]))
+                test_loss.append(float(row["test_loss"]))
+                test_mae.append(float(row["test_mae"]))
+                test_rmse.append(float(row["test_rmse"]))
+
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5), dpi=300)
 
         # Subplot 1: MSE Loss Convergence
-        rounds = log_df["round"]
-        ax1.plot(rounds, log_df["test_loss"], marker="o", color="#2563eb", linewidth=2, label="Global Test MSE Loss")
-        if "avg_train_loss" in log_df.columns:
-            ax1.plot(rounds, log_df["avg_train_loss"], marker="s", linestyle="--", color="#10b981", linewidth=1.8, label="Client Avg Train Loss")
+        ax1.plot(rounds, test_loss, marker="o", color="#2563eb", linewidth=2, label="Global Test MSE Loss")
+        ax1.plot(rounds, avg_train_loss, marker="s", linestyle="--", color="#10b981", linewidth=1.8, label="Client Avg Train Loss")
         ax1.set_title("FedAvg Convergence Curve (Loss vs Communication Round)", fontsize=12, fontweight="bold", pad=12)
         ax1.set_xlabel("Communication Round", fontsize=11)
         ax1.set_ylabel("Mean Squared Error (MSE)", fontsize=11)
         ax1.set_xticks(rounds)
         ax1.grid(True, linestyle="--", alpha=0.6)
-        ax1.legend(frameon=True, facecolor="white", edgecolor="none", shadow=True)
+        ax1.legend(frameon=True, facecolor="white", edgecolor="none")
 
         # Subplot 2: MAE & RMSE Error Metrics
-        ax2.plot(rounds, log_df["test_mae"], marker="^", color="#f59e0b", linewidth=2, label="Test MAE")
-        ax2.plot(rounds, log_df["test_rmse"], marker="d", color="#ef4444", linewidth=2, label="Test RMSE")
+        ax2.plot(rounds, test_mae, marker="^", color="#f59e0b", linewidth=2, label="Test MAE")
+        ax2.plot(rounds, test_rmse, marker="d", color="#ef4444", linewidth=2, label="Test RMSE")
         ax2.axhline(y=cent_res["mlp_centralized"]["mae"], color="#6b7280", linestyle=":", label=f"Centralized MLP MAE ({cent_res['mlp_centralized']['mae']:.4f})")
         ax2.set_title("Engagement Error Progression Across FL Rounds", fontsize=12, fontweight="bold", pad=12)
         ax2.set_xlabel("Communication Round", fontsize=11)
         ax2.set_ylabel("Error Metric Value", fontsize=11)
         ax2.set_xticks(rounds)
         ax2.grid(True, linestyle="--", alpha=0.6)
-        ax2.legend(frameon=True, facecolor="white", edgecolor="none", shadow=True)
+        ax2.legend(frameon=True, facecolor="white", edgecolor="none")
 
         plt.tight_layout()
         os.makedirs(os.path.dirname(chart_output_path), exist_ok=True)
@@ -95,7 +105,7 @@ def generate_phase1_comparison(
         plt.close()
         print(f"Convergence plot successfully saved to: {chart_output_path}")
 
-    print("=" * 80 + "\n")
+    print("=" * 88 + "\n")
 
 if __name__ == "__main__":
     generate_phase1_comparison()

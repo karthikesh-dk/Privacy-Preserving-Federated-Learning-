@@ -21,10 +21,10 @@
     "model_name": "Centralized PyTorch MLP (d->64->32->1)",
     "num_train_samples": 6400,
     "num_test_samples": 1600,
-    "epochs": 25,
-    "mae": 0.0872,
-    "rmse": 0.1347,
-    "mse": 0.0181,
-    "r2": 0.5691
+    "epochs": 20,
+    "mae": 0.086,
+    "rmse": 0.1352,
+    "mse": 0.0183,
+    "r2": 0.5654
   }
 }
