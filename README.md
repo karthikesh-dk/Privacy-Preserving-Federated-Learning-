@@ -192,8 +192,112 @@ Run the master runner script to execute dataset generation, centralized benchmar
 
 ---
 
-## 6. Academic & Privacy Contributions
+## 7. Phase III: EchoSafe Live Social Media Demo Platform
 
-1. **Complete Decentralization of Sensitive Text:** Social media comments often contain sensitive personal communications, private opinions, or identifying context. By shifting training entirely onto the influencer's local client node, zero raw comments are ever transmitted or aggregated centrally.
-2. **Disjoint Template & User Generalization:** Unlike standard random splits that memorize repeated synthetic phrases, our split ensures the test set contains zero users or text templates seen during training, proving true linguistic generalization.
-3. **Multi-Faceted Abuse Profiling:** Rather than treating toxicity as isolated text predictions, the framework evaluates temporal comment frequency, activity bursts, and escalation velocity, reliably distinguishing chronic harassers from occasional critics with a low 1.87% false alarm rate.
+**EchoSafe** is an interactive, full-stack demonstration social media application that brings the trained privacy-preserving federated models to life in a realistic Instagram/YouTube-style creator platform.
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                             ECHOSAFE WEB PLATFORM                                │
+├──────────────────────────┬───────────────────────────┬───────────────────────────┤
+│ 1. Follower Feed         │ 2. Creator Studio         │ 3. Safety & FL Console    │
+│ • 6 Post formats         │ • Community Health Gauge  │ • Explainable Queue       │
+│ • Live comment stream    │ • Toxicity velocity alert │ • Graded interventions    │
+│ • Masked text preview    │ • Sentiment breakdown     │ • Non-clinical wellbeing  │
+│ • Fair appeal workflow   │ • Post risk analysis      │ • Flower FL & SecAgg mesh │
+└──────────────────────────┴───────────────────────────┴───────────────────────────┘
+```
+
+### 7.1 One-Command Setup & Launch
+
+1. **Launch Everything (Backend + Built React Frontend):**
+   Double-click `run_website.bat` or run:
+   ```powershell
+   .\python.bat -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
+   ```
+   Open your browser to: **`http://127.0.0.1:8000/`**
+
+2. **Frontend Development Server (Optional for Live HMR):**
+   ```powershell
+   cd frontend
+   npm run dev
+   ```
+
+### 7.2 Pre-Configured Demo Accounts & Instant Role Switcher
+
+The top navbar includes a **1-Click Role Switcher** dropdown allowing you to switch identities without manually typing credentials:
+
+| Role / Persona | Username | Password | Purpose & Special Permissions |
+| :--- | :--- | :--- | :--- |
+| **Follower (Positive)** | `user_positive` | `demo123` | High-sentiment audience member posting encouraging support |
+| **Follower (Critic)** | `user_critic` | `demo123` | Skeptical commenter demonstrating non-censored constructive critique |
+| **Follower (Abuser)** | `user_abuser` | `demo123` | Repeat hostile offender testing safety triggers & graded cooldowns |
+| **Influencer (Gaming)** | `creator_0_competitive` | `demo123` | Creator with high debate/opinion toxicity velocity |
+| **Influencer (Comedy)** | `creator_5_regional` | `demo123` | Creator with diverse cultural format comments |
+| **Moderator** | `moderator_sarah` | `demo123` | Safety team member: queue triage, unmasking, user behavior inspection |
+| **Admin** | `admin` | `demo123` | FL coordinator: execute federated training rounds & inspect privacy proofs |
+
+---
+
+### 7.3 5-Minute Interactive Demo Walkthrough Script
+
+Follow these steps in order to demonstrate the complete live pipeline:
+
+1. **Explore the Feed:**
+   - Open `http://127.0.0.1:8000/`. You are logged in as a normal user.
+   - Filter by post types: *All*, *Opinions*, *Reels*, *Images*, *Videos*, *Live Debates*.
+   - Click the Heart button to like a post. Expand comments to see the live feed.
+
+2. **Test Benign Praise & Free Speech Protection:**
+   - On the top **Simulator Bar**, click **"✨ 1. Praise"**: The comment is analyzed by the on-device model and published immediately.
+   - Click **"💬 2. Fair Critique"**: The constructive criticism is classified as non-abusive. The policy engine protects free speech and publishes it without censorship.
+
+3. **Trigger Hostility Interception & Safety Masking:**
+   - Click **"📈 4. Escalating Toxicity"**: The simulator switches to `user_abuser` and posts targeted harassment.
+   - Notice that the comment text is **blurred and masked** (`***`). Normal users are never exposed to raw toxic comments.
+   - Click **"🚨 5. Burst Attack"**: Rapid burst comments trigger dynamic rate limiting and temporary slow-mode cooldown.
+
+4. **Moderator Console & Explainable AI Triage:**
+   - In the navbar, click **"Moderator Console"** (or switch role to *Moderator* in the dropdown).
+   - In the **Flagged Queue**, observe the flagged comment.
+   - Click **"Click to Reveal (Moderator Only)"** to safely unmask the text.
+   - Notice the **Trigger Words** chips highlighting explanatory terms (e.g., `["garbage", "clown", "trash"]`).
+   - Click **"Inspect Behavior Profile"**: View the user's comment frequency, escalation slope, burst count, and the **Wellbeing Signal** (*Low/Medium/High*).
+   - Note the prominent ethical notice: *"Not a clinical diagnosis. For human safety team review only."*
+   - Choose a graded action: `Approve`, `Warn`, `15m Slow Mode`, `Shadow Filter`, or `48h Mute`.
+
+5. **Creator Safety & Analytics Studio:**
+   - Click **"Creator Studio"** in the navbar.
+   - Switch between creator channels (e.g. Gaming vs Comedy).
+   - Review the **Community Health Gauge** (0–100), **Toxicity Velocity**, and the **Sentiment Distribution Doughnut Chart**.
+   - Review **"Which Post Types Attract Negativity?"** to see format-level controversy breakdowns.
+   - Review the **Top Repeat Targeters** table showing active restrictions.
+
+6. **Federated Learning Control Center (Admin):**
+   - Click **"FL Console"** in the navbar (or switch role to *Admin*).
+   - Observe the **8 Decentralized Influencer Nodes**, each showing isolated local comment partitions and **0 Bytes raw text leaked**.
+   - Configure the round: Toggle between **FedAvg** and **FedProx**, enable **Secure Aggregation (SecAgg)**, and toggle **Differential Privacy (DP-FL)** with the noise slider ($\sigma$).
+   - Click **"Run Federated Round Now"**: Watch the live step aggregation update and see the new round plotted on the **Convergence Curve**.
+   - Inspect the **Cryptographic Data Locality & Privacy Audit** panel proving exact zero-sum mask cancellation and bounded $(\epsilon, \delta)$ budgets.
+
+7. **How Privacy Works Explainer:**
+   - Click **"How Privacy Works"** to review the visual architectural comparison between legacy centralized platforms and EchoSafe's decentralized federated design.
+
+---
+
+### 7.4 Verification & Automated Testing
+
+All pipelines, threshold engines, and auth flows are verified via automated tests:
+
+```powershell
+# 1. Run all pytest test suites (9 automated tests covering pipeline, policy & auth)
+.\python.bat -m pytest tests/ -v
+
+# 2. Run the end-to-end demo replay script (replays all 9 scenarios)
+.\python.bat demo_replay.py
+
+# 3. Verify production frontend build
+cd frontend
+npm run build
+```
+
