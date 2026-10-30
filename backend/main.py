@@ -2,14 +2,16 @@
 FastAPI Backend Server for Privacy-Preserving Federated Learning for Social Media Influencer.
 
 Endpoints:
-1. /api/health               : System health and project metadata.
-2. /api/influencers          : List of all 8 influencer client communities with health scores.
-3. /api/wellbeing/{inf_id}   : Community mental wellbeing index, toxicity velocity, and surge alerts.
-4. /api/abusers              : Identified repeat abusers, risk scores, and tiered actions.
-5. /api/moderate             : Real-time comment moderation inference via Federated model.
-6. /api/fl/benchmark         : Centralized vs Federated FedAvg comparative metrics.
-7. /api/fl/convergence       : Per-round training loss and F1 convergence history.
-8. /api/privacy/verify       : Secure Aggregation & Differential Privacy guarantee audit.
+1. /dashboard, /             : Interactive Web Dashboard (HTML/Tailwind/Chart.js).
+2. /api/health               : System health and project metadata.
+3. /api/influencers          : List of all 8 influencer client communities with health scores.
+4. /api/wellbeing/{inf_id}   : Community mental wellbeing index, toxicity velocity, and surge alerts.
+5. /api/abusers              : Identified repeat abusers, risk scores, and tiered actions.
+6. /api/moderate             : Real-time comment moderation inference via Federated model.
+7. /api/fl/benchmark         : Centralized vs Federated FedAvg comparative metrics.
+8. /api/fl/convergence       : Per-round training loss and F1 convergence history.
+9. /api/fl/ablation          : Full 8-condition privacy vs utility ablation study results.
+10. /api/privacy/verify      : Secure Aggregation & Differential Privacy guarantee audit.
 """
 
 import os
@@ -18,6 +20,7 @@ import json
 import csv
 from typing import Dict, List, Any, Optional
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -80,14 +83,24 @@ class ModerationResponse(BaseModel):
     recommended_action: str
     decision_rationale: str
 
-@app.get("/")
-def root():
+@app.get("/", response_class=HTMLResponse)
+@app.get("/dashboard", response_class=HTMLResponse)
+def render_dashboard():
+    template_path = os.path.join(os.path.dirname(__file__), "templates", "dashboard.html")
+    if os.path.exists(template_path):
+        with open(template_path, "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>Dashboard template not found. Open /docs for Swagger UI.</h1>"
+
+@app.get("/api/info")
+def project_info():
     return {
         "project_title": "Privacy-Preserving Federated Learning for Social Media Influencer",
         "institution": "BMS Institute of Technology & Management",
         "student": "D K Karthikesh (1BY25MC034)",
         "guide": "Prof Reshma C R",
         "status": "Online",
+        "dashboard_url": "/dashboard",
         "docs_url": "/docs"
     }
 
@@ -183,6 +196,14 @@ def get_convergence_history():
                 "comm_kb": float(row["comm_kb"])
             })
     return {"rounds": rounds}
+
+@app.get("/api/fl/ablation")
+def get_ablation_results():
+    ablation_path = "experiments/results/ablation_benchmark.json"
+    if not os.path.exists(ablation_path):
+        raise HTTPException(status_code=404, detail="Ablation benchmark results not found.")
+    with open(ablation_path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 @app.get("/api/privacy/verify")
 def verify_privacy_mechanisms():

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy-Preserving Federated Learning for Social Media Influencer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(229, 231, 235, 0.8); }
+    .tab-active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: 600; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- TOP APP BAR -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+          FL
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+            Privacy-Preserving Federated Learning for Social Media Influencer
+          </h1>
+          <p class="text-xs text-slate-500">
+            MCA Project — BMSIT&M | Student: D K Karthikesh (1BY25MC034) | Guide: Prof Reshma C R
+          </p>
+        </div>
+      </div>
+
+      <!-- Live Privacy Guarantees Badges -->
+      <div class="flex items-center gap-2 text-xs font-medium">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span class="w-2 h-2 mr-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Zero Raw Text Leaked
+        </span>
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
+          (ε=20.98, δ=1e-5)-DP
+        </span>
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
+          SecAgg: 0.0000 Residual
+        </span>
+      </div>
+    </div>
+
+    <!-- NAVIGATION TABS -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8 text-sm border-t border-slate-100">
+      <button onclick="switchTab('wellbeing')" id="tab-wellbeing" class="py-3 px-1 text-slate-600 hover:text-blue-600 tab-active transition-colors">
+        Creator Community Wellbeing
+      </button>
+      <button onclick="switchTab('moderation')" id="tab-moderation" class="py-3 px-1 text-slate-600 hover:text-blue-600 transition-colors">
+        Live Moderation Simulator
+      </button>
+      <button onclick="switchTab('abusers')" id="tab-abusers" class="py-3 px-1 text-slate-600 hover:text-blue-600 transition-colors">
+        Repeat Abusers Queue
+      </button>
+      <button onclick="switchTab('fl-monitor')" id="tab-fl-monitor" class="py-3 px-1 text-slate-600 hover:text-blue-600 transition-colors">
+        Federated Learning & Privacy Monitor
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: CREATOR WELLBEING & TOXICITY RADAR -->
+    <!-- ========================================== -->
+    <section id="view-wellbeing" class="space-y-6">
+      <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center justify-between">
+        <div>
+          <h2 class="text-sm font-bold text-blue-900">Creator Mental Wellbeing & Toxicity Exposure Index</h2>
+          <p class="text-xs text-blue-700 mt-0.5">
+            Real-time community health monitoring across 8 decentralized influencer nodes. Early detection of coordinated harassment raids.
+          </p>
+        </div>
+        <button onclick="loadWellbeingData()" class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition">
+          Refresh Live Data
+        </button>
+      </div>
+
+      <div id="influencer-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Rendered dynamically -->
+        <div class="col-span-full text-center py-10 text-slate-400">Loading influencer communities...</div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: LIVE COMMENT MODERATION BENCH -->
+    <!-- ========================================== -->
+    <section id="view-moderation" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Input Form -->
+        <div class="lg:col-span-5 glass-panel rounded-2xl p-6 shadow-sm space-y-4">
+          <h2 class="text-base font-bold text-slate-900">Live Comment Moderation Test Bench</h2>
+          <p class="text-xs text-slate-500">
+            Submit a test comment to execute real-time inference using the global Federated model and local user behavioral history.
+          </p>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Target Influencer Community</label>
+            <select id="mod-influencer" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500">
+              <option value="inf_0">Creator_0 (Gaming - YouTube)</option>
+              <option value="inf_1">Creator_1 (Beauty & Fashion - Instagram)</option>
+              <option value="inf_2">Creator_2 (Political Commentary - X)</option>
+              <option value="inf_3">Creator_3 (Tech & Gadgets - YouTube)</option>
+              <option value="inf_4">Creator_4 (Fitness - Instagram)</option>
+              <option value="inf_5">Creator_5 (Regional Comedy - Instagram)</option>
+              <option value="inf_6">Creator_6 (Startups - X)</option>
+              <option value="inf_7">Creator_7 (Lifestyle Vlogs - TikTok)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Simulated User Context</label>
+            <select id="mod-user" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500">
+              <option value="user_0001">user_0001 (Normal Positive - Risk: 0.00)</option>
+              <option value="user_0002">user_0002 (Occasional Critic - Risk: 0.12)</option>
+              <option value="user_0452">user_0452 (Escalating Abuser - Risk: 0.71)</option>
+              <option value="user_1922">user_1922 (Chronic Repeat Abuser - Risk: 0.72)</option>
+              <option value="user_0686">user_0686 (Severe Harasser - Risk: 0.72)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Comment Text</label>
+            <textarea id="mod-text" rows="3" class="w-full text-xs p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500" placeholder="Type a comment to test moderation..."></textarea>
+          </div>
+
+          <!-- Presets -->
+          <div class="space-y-1">
+            <label class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Quick Preset Examples</label>
+            <div class="flex flex-wrap gap-1.5 text-xs">
+              <button onclick="setCommentPreset('positive')" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 text-[11px]">Positive</button>
+              <button onclick="setCommentPreset('criticism')" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 text-[11px]">Constructive Criticism</button>
+              <button onclick="setCommentPreset('mild_abuse')" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 text-[11px]">Mild Abuse</button>
+              <button onclick="setCommentPreset('severe_abuse')" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 text-[11px]">Severe Chronic Threat</button>
+            </div>
+          </div>
+
+          <button onclick="submitModeration()" id="btn-submit-mod" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition">
+            Evaluate Comment With Federated Model
+          </button>
+        </div>
+
+        <!-- Evaluation Results Panel -->
+        <div class="lg:col-span-7 glass-panel rounded-2xl p-6 shadow-sm space-y-5">
+          <h2 class="text-base font-bold text-slate-900">Automated Moderation Verdict & Decision Logic</h2>
+
+          <div id="mod-placeholder" class="text-center py-16 text-slate-400 text-xs">
+            Submit a comment on the left to see federated classification, author behavioral risk scoring, and recommended tiered action.
+          </div>
+
+          <div id="mod-result" class="hidden space-y-4">
+            <!-- Verdict Banner -->
+            <div id="verdict-banner" class="p-4 rounded-xl border flex items-center justify-between">
+              <div>
+                <span id="verdict-tag" class="text-xs font-extrabold uppercase px-2.5 py-1 rounded-md"></span>
+                <h3 id="verdict-title" class="text-sm font-bold mt-2 text-slate-900"></h3>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-slate-500 block">Enforcement Action:</span>
+                <span id="action-tag" class="text-xs font-bold text-slate-800"></span>
+              </div>
+            </div>
+
+            <!-- Masked Text & Rationale -->
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-1.5">
+              <div><strong class="text-slate-600">Masked Public Display:</strong> <span id="res-masked" class="text-slate-900 font-medium"></span></div>
+              <div><strong class="text-slate-600">Decision Rationale:</strong> <span id="res-rationale" class="text-slate-700"></span></div>
+            </div>
+
+            <!-- Probabilities Bars -->
+            <div>
+              <h4 class="text-xs font-bold text-slate-800 mb-2">Federated Softmax Classification Probabilities</h4>
+              <div class="space-y-2 text-xs">
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="font-medium text-emerald-700">Positive</span>
+                    <span id="prob-pos-val" class="font-bold">0%</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2">
+                    <div id="prob-pos-bar" class="bg-emerald-500 h-2 rounded-full" style="width: 0%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="font-medium text-slate-600">Neutral</span>
+                    <span id="prob-neu-val" class="font-bold">0%</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2">
+                    <div id="prob-neu-bar" class="bg-slate-400 h-2 rounded-full" style="width: 0%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="font-medium text-amber-700">Constructive Criticism (Non-Abusive)</span>
+                    <span id="prob-crit-val" class="font-bold">0%</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2">
+                    <div id="prob-crit-bar" class="bg-amber-500 h-2 rounded-full" style="width: 0%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="font-medium text-rose-700">Abusive / Vulgar</span>
+                    <span id="prob-abu-val" class="font-bold">0%</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2">
+                    <div id="prob-abu-bar" class="bg-rose-500 h-2 rounded-full" style="width: 0%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Author Behavioral Context -->
+            <div class="grid grid-cols-3 gap-3 pt-2 border-t border-slate-100 text-center">
+              <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                <span class="text-[10px] text-slate-500 uppercase block">Author Risk Score</span>
+                <span id="res-user-risk" class="text-sm font-bold text-slate-900">0.00</span>
+              </div>
+              <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                <span class="text-[10px] text-slate-500 uppercase block">Repeat Infractions</span>
+                <span id="res-user-repeat" class="text-sm font-bold text-slate-900">0</span>
+              </div>
+              <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                <span class="text-[10px] text-slate-500 uppercase block">Inferred Archetype</span>
+                <span id="res-user-arch" class="text-xs font-semibold text-slate-800">Normal</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: REPEAT ABUSER MODERATION QUEUE -->
+    <!-- ========================================== -->
+    <section id="view-abusers" class="hidden space-y-4">
+      <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200">
+        <div>
+          <h2 class="text-sm font-bold text-slate-900">Repeat & Escalating Abusers Moderation Queue</h2>
+          <p class="text-xs text-slate-500">Users flagged by the Behavioral Risk Profiler with high toxicity ratios, comment bursts, or escalation trends.</p>
+        </div>
+        <div class="text-xs font-semibold text-slate-600">
+          Showing High-Risk Profiles (Risk &ge; 0.40)
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-slate-200 text-xs">
+            <thead class="bg-slate-50 text-slate-600 font-semibold text-left">
+              <tr>
+                <th class="px-4 py-3">User ID</th>
+                <th class="px-4 py-3">Inferred Archetype</th>
+                <th class="px-4 py-3 text-center">Total Comments</th>
+                <th class="px-4 py-3 text-center">Abuse Ratio</th>
+                <th class="px-4 py-3 text-center">Repeat Offences</th>
+                <th class="px-4 py-3 text-center">Escalation Slope</th>
+                <th class="px-4 py-3 text-center">Risk Score</th>
+                <th class="px-4 py-3 text-center">Recommended Action</th>
+              </tr>
+            </thead>
+            <tbody id="abusers-table-body" class="divide-y divide-slate-100">
+              <tr><td colspan="8" class="text-center py-8 text-slate-400">Loading flagged users...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: FL & PRIVACY MONITOR -->
+    <!-- ========================================== -->
+    <section id="view-fl-monitor" class="hidden space-y-6">
+      <!-- Benchmark Table -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <h2 class="text-base font-bold text-slate-900">Comprehensive Experimental Benchmark: Centralized vs Federated</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-slate-200 text-xs">
+            <thead class="bg-slate-50 text-slate-600 font-semibold text-left">
+              <tr>
+                <th class="px-4 py-3">Paradigm / Architecture</th>
+                <th class="px-4 py-3 text-center">Macro-F1</th>
+                <th class="px-4 py-3 text-center">Accuracy</th>
+                <th class="px-4 py-3 text-center">Abuse-Class F1</th>
+                <th class="px-4 py-3 text-center">Benign False Positive Rate</th>
+                <th class="px-4 py-3 text-center">Raw Comments Leaked</th>
+                <th class="px-4 py-3 text-center">Privacy Guarantee</th>
+              </tr>
+            </thead>
+            <tbody id="fl-benchmark-body" class="divide-y divide-slate-100">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-slate-800">Centralized Baseline (Pooled)</td>
+                <td class="px-4 py-3 text-center font-bold text-slate-900">0.9381</td>
+                <td class="px-4 py-3 text-center">0.9424</td>
+                <td class="px-4 py-3 text-center font-bold text-emerald-600">0.9635</td>
+                <td class="px-4 py-3 text-center text-slate-600">1.01%</td>
+                <td class="px-4 py-3 text-center text-rose-600 font-bold">YES (100% Leaked)</td>
+                <td class="px-4 py-3 text-center text-slate-400">None</td>
+              </tr>
+              <tr class="bg-blue-50/40">
+                <td class="px-4 py-3 font-semibold text-blue-900">Federated FedAvg (12 Rounds, 8 Clients)</td>
+                <td class="px-4 py-3 text-center font-bold text-blue-900">0.9381</td>
+                <td class="px-4 py-3 text-center">0.9424</td>
+                <td class="px-4 py-3 text-center font-bold text-emerald-600">0.9635</td>
+                <td class="px-4 py-3 text-center text-slate-600">1.01%</td>
+                <td class="px-4 py-3 text-center text-emerald-600 font-bold">NO (0% Leaked)</td>
+                <td class="px-4 py-3 text-center text-blue-700 font-medium">On-Device FL</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Charts Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 class="text-xs font-bold text-slate-800 mb-3">FedAvg Training Loss Convergence Across 12 FL Rounds</h3>
+          <canvas id="chart-loss" height="180"></canvas>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 class="text-xs font-bold text-slate-800 mb-3">Model Utility Progression (Macro-F1 & Abuse-F1)</h3>
+          <canvas id="chart-f1" height="180"></canvas>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT APP CONTROLLER -->
+  <script>
+    const API_BASE = window.location.origin;
+
+    function switchTab(tab) {
+      ['wellbeing', 'moderation', 'abusers', 'fl-monitor'].forEach(t => {
+        const view = document.getElementById('view-' + t);
+        const btn = document.getElementById('tab-' + t);
+        if (t === tab) {
+          view.classList.remove('hidden');
+          btn.classList.add('tab-active');
+        } else {
+          view.classList.add('hidden');
+          btn.classList.remove('tab-active');
+        }
+      });
+
+      if (tab === 'wellbeing') loadWellbeingData();
+      if (tab === 'abusers') loadAbusersData();
+      if (tab === 'fl-monitor') loadFLMonitorData();
+    }
+
+    async function loadWellbeingData() {
+      const container = document.getElementById('influencer-cards');
+      try {
+        const res = await fetch(`${API_BASE}/api/influencers`);
+        const data = await res.json();
+        
+        container.innerHTML = data.map(inf => {
+          const isAlert = inf.is_raid_detected;
+          const statusBg = inf.status === 'HEALTHY' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                           inf.status === 'ELEVATED_STRESS' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-rose-50 text-rose-700 border-rose-200';
+
+          return `
+            <div class="glass-panel p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-3">
+              <div>
+                <div class="flex justify-between items-start mb-2">
+                  <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">${inf.platform}</span>
+                  <span class="text-[11px] px-2 py-0.5 rounded-full font-bold border ${statusBg}">${inf.status}</span>
+                </div>
+                <h3 class="font-bold text-sm text-slate-900">${inf.creator_name}</h3>
+                <p class="text-xs text-slate-500">${inf.niche}</p>
+              </div>
+
+              <!-- Health Score Gauge -->
+              <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+                <span class="text-[10px] text-slate-400 uppercase font-semibold">Community Health</span>
+                <div class="text-2xl font-extrabold text-slate-900">${inf.community_health_score} <span class="text-xs font-normal text-slate-400">/ 100</span></div>
+                <div class="text-[11px] text-slate-500 mt-1">Toxicity Velocity: <span class="font-bold ${inf.toxicity_velocity > 0.05 ? 'text-rose-600' : 'text-slate-700'}">${inf.toxicity_velocity > 0 ? '+' : ''}${(inf.toxicity_velocity * 100).toFixed(1)}%</span></div>
+              </div>
+
+              ${isAlert ? `
+                <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-800 text-[11px] font-semibold flex items-center gap-1.5">
+                  <span>🚨</span> Harassment Surge Alert!
+                </div>
+              ` : ''}
+
+              <div class="text-[11px] text-slate-600 bg-slate-50/50 p-2 rounded-lg border border-slate-100">
+                <strong>Safety Policy:</strong> ${inf.protective_recommendation}
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        container.innerHTML = `<div class="col-span-full text-center text-rose-600 text-xs">Failed to load live data: ${err.message}</div>`;
+      }
+    }
+
+    async function loadAbusersData() {
+      const tbody = document.getElementById('abusers-table-body');
+      try {
+        const res = await fetch(`${API_BASE}/api/abusers?limit=40&min_risk=0.40`);
+        const data = await res.json();
+
+        tbody.innerHTML = data.map(u => {
+          let actionClass = "bg-slate-100 text-slate-700";
+          if (u.recommended_action === 'permanent_block_referral') actionClass = "bg-rose-100 text-rose-800 border border-rose-300 font-bold";
+          else if (u.recommended_action === 'temporary_mute') actionClass = "bg-orange-100 text-orange-800 border border-orange-300 font-semibold";
+          else if (u.recommended_action === 'rate_limit_cooldown') actionClass = "bg-amber-100 text-amber-800 border border-amber-300";
+          else if (u.recommended_action === 'shadow_filter') actionClass = "bg-purple-100 text-purple-800 border border-purple-300";
+
+          return `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="px-4 py-2.5 font-mono font-bold text-slate-900">${u.user_id}</td>
+              <td class="px-4 py-2.5 capitalize text-slate-700">${u.predicted_archetype.replace('_', ' ')}</td>
+              <td class="px-4 py-2.5 text-center text-slate-600">${u.total_comments}</td>
+              <td class="px-4 py-2.5 text-center font-semibold text-rose-600">${(u.abuse_ratio * 100).toFixed(0)}%</td>
+              <td class="px-4 py-2.5 text-center font-bold text-slate-800">${u.repeat_offences}</td>
+              <td class="px-4 py-2.5 text-center font-mono ${u.escalation_slope > 0.1 ? 'text-rose-600 font-bold' : 'text-slate-500'}">${u.escalation_slope > 0 ? '+' : ''}${u.escalation_slope.toFixed(3)}</td>
+              <td class="px-4 py-2.5 text-center font-bold text-slate-900">${u.user_risk_score.toFixed(2)}</td>
+              <td class="px-4 py-2.5 text-center">
+                <span class="px-2 py-0.5 rounded text-[10px] uppercase ${actionClass}">${u.recommended_action.replace(/_/g, ' ')}</span>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-rose-600 py-4">Error loading abusers: ${err.message}</td></tr>`;
+      }
+    }
+
+    function setCommentPreset(type) {
+      const textarea = document.getElementById('mod-text');
+      const userSel = document.getElementById('mod-user');
+      if (type === 'positive') {
+        textarea.value = "Your explanation in this video was brilliant, thank you so much!";
+        userSel.value = "user_0001";
+      } else if (type === 'criticism') {
+        textarea.value = "I disagree with the benchmark method used here, seems skewed toward one platform.";
+        userSel.value = "user_0002";
+      } else if (type === 'mild_abuse') {
+        textarea.value = "You are a complete clown and your tips are completely useless.";
+        userSel.value = "user_0452";
+      } else if (type === 'severe_abuse') {
+        textarea.value = "This is the worst fucking video, go delete your channel you useless asshole.";
+        userSel.value = "user_1922";
+      }
+    }
+
+    async function submitModeration() {
+      const text = document.getElementById('mod-text').value.trim();
+      const user_id = document.getElementById('mod-user').value;
+      const influencer_id = document.getElementById('mod-influencer').value;
+      const btn = document.getElementById('btn-submit-mod');
+
+      if (!text) {
+        alert("Please enter a comment text to evaluate.");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Evaluating via Federated Model...";
+
+      try {
+        const res = await fetch(`${API_BASE}/api/moderate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, user_id, influencer_id })
+        });
+        const data = await res.json();
+
+        document.getElementById('mod-placeholder').classList.add('hidden');
+        document.getElementById('mod-result').classList.remove('hidden');
+
+        // Populate results
+        document.getElementById('res-masked').textContent = data.original_text_masked;
+        document.getElementById('res-rationale').textContent = data.decision_rationale;
+
+        // Verdict Styling
+        const banner = document.getElementById('verdict-banner');
+        const vTag = document.getElementById('verdict-tag');
+        const vTitle = document.getElementById('verdict-title');
+        const aTag = document.getElementById('action-tag');
+
+        vTag.textContent = data.moderation_verdict;
+        vTitle.textContent = `${data.moderation_verdict} — ${data.predicted_label.toUpperCase()}`;
+        aTag.textContent = data.recommended_action.replace(/_/g, ' ').toUpperCase();
+
+        if (data.moderation_verdict === 'APPROVED') {
+          banner.className = "p-4 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-900 flex justify-between items-center";
+          vTag.className = "text-xs font-extrabold uppercase px-2.5 py-1 rounded-md bg-emerald-600 text-white";
+        } else if (data.moderation_verdict === 'BLOCKED') {
+          banner.className = "p-4 rounded-xl border bg-rose-50 border-rose-200 text-rose-900 flex justify-between items-center";
+          vTag.className = "text-xs font-extrabold uppercase px-2.5 py-1 rounded-md bg-rose-600 text-white";
+        } else {
+          banner.className = "p-4 rounded-xl border bg-amber-50 border-amber-200 text-amber-900 flex justify-between items-center";
+          vTag.className = "text-xs font-extrabold uppercase px-2.5 py-1 rounded-md bg-amber-600 text-white";
+        }
+
+        // Probabilities
+        const p = data.class_probabilities;
+        const setBar = (name, val) => {
+          const pct = (val * 100).toFixed(1) + '%';
+          document.getElementById(`prob-${name}-val`).textContent = pct;
+          document.getElementById(`prob-${name}-bar`).style.width = pct;
+        };
+        setBar('pos', p.positive);
+        setBar('neu', p.neutral);
+        setBar('crit', p.criticism);
+        setBar('abu', p.abusive);
+
+        // Author details
+        document.getElementById('res-user-risk').textContent = data.author_risk_score.toFixed(2);
+        document.getElementById('res-user-repeat').textContent = data.author_repeat_offences;
+        document.getElementById('res-user-arch').textContent = data.author_archetype.replace('_', ' ');
+
+      } catch (err) {
+        alert("Evaluation failed: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Evaluate Comment With Federated Model";
+      }
+    }
+
+    let lossChartInstance = null;
+    let f1ChartInstance = null;
+
+    async function loadFLMonitorData() {
+      try {
+        const res = await fetch(`${API_BASE}/api/fl/convergence`);
+        const data = await res.json();
+        const rounds = data.rounds;
+
+        const labels = rounds.map(r => `R${r.round}`);
+        const lossData = rounds.map(r => r.avg_train_loss);
+        const macroF1Data = rounds.map(r => r.macro_f1);
+        const abuseF1Data = rounds.map(r => r.abuse_f1);
+
+        // Loss Chart
+        if (lossChartInstance) lossChartInstance.destroy();
+        const ctxLoss = document.getElementById('chart-loss').getContext('2d');
+        lossChartInstance = new Chart(ctxLoss, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Cross-Entropy Loss',
+              data: lossData,
+              borderColor: '#dc2626',
+              backgroundColor: 'rgba(220, 38, 38, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2
+            }]
+          },
+          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
+        });
+
+        // F1 Chart
+        if (f1ChartInstance) f1ChartInstance.destroy();
+        const ctxF1 = document.getElementById('chart-f1').getContext('2d');
+        f1ChartInstance = new Chart(ctxF1, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [
+              {
+                label: 'Macro-F1 Score',
+                data: macroF1Data,
+                borderColor: '#2563eb',
+                borderWidth: 2,
+                tension: 0.2
+              },
+              {
+                label: 'Abuse-Class F1 Score',
+                data: abuseF1Data,
+                borderColor: '#16a34a',
+                borderWidth: 2,
+                tension: 0.2
+              }
+            ]
+          },
+          options: { responsive: true, scales: { y: { min: 0.90, max: 1.0 } } }
+        });
+
+      } catch (err) {
+        console.error("Failed to load FL Monitor data", err);
+      }
+    }
+
+    // Auto-load initial tab
+    window.addEventListener('DOMContentLoaded', () => {
+      loadWellbeingData();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+[
+  {
+    "paradigm": "Centralized Baseline (Pooled)",
+    "macro_f1": 0.9381,
+    "accuracy": 0.9424,
+    "abuse_f1": 0.9635,
+    "fpr_normal_users": 0.0101,
+    "comm_mb": 0.0,
+    "privacy_mechanism": "None (100% Raw Text Leaked)",
+    "raw_text_leaked": true,
+    "history": [
+      0.9381,
+      0.9381,
+      0.9381,
+      0.9381,
+      0.9381,
+      0.9381,
+      0.9381,
+      0.9381
+    ]
+  },
+  {
+    "paradigm": "Local-Only (Isolated, No FL)",
+    "macro_f1": 0.9054,
+    "accuracy": 0.9075,
+    "abuse_f1": 0.9073,
+    "fpr_normal_users": 0.0408,
+    "comm_mb": 0.0,
+    "privacy_mechanism": "Local Data Isolation",
+    "raw_text_leaked": false,
+    "history": [
+      0.9054,
+      0.9054,
+      0.9054,
+      0.9054,
+      0.9054,
+      0.9054,
+      0.9054,
+      0.9054
+    ]
+  },
+  {
+    "paradigm": "Federated FedAvg",
+    "macro_f1": 0.9381,
+    "accuracy": 0.9424,
+    "abuse_f1": 0.9635,
+    "fpr_normal_users": 0.0101,
+    "comm_mb": 77.17,
+    "raw_text_leaked": false,
+    "history": [
+      0.944,
+      0.9406,
+      0.9406,
+      0.9406,
+      0.9381,
+      0.9381,
+      0.9381,
+      0.9381
+    ],
+    "loss_history": [
+      0.17770764639551218,
+      0.1309314702590373,
+      0.12757405067026237,
+      0.12752531336043918,
+      0.1212673209355368,
+      0.1250466355965251,
+      0.12212527886260345,
+      0.12181275089775834
+    ],
+    "privacy_mechanism": "On-Device FL (Data Locality)"
+  },
+  {
+    "paradigm": "Federated FedProx (mu=0.01)",
+    "macro_f1": 0.9382,
+    "accuracy": 0.9424,
+    "abuse_f1": 0.9635,
+    "fpr_normal_users": 0.0101,
+    "comm_mb": 77.17,
+    "raw_text_leaked": false,
+    "history": [
+      0.9377,
+      0.9407,
+      0.9406,
+      0.9409,
+      0.9409,
+      0.9381,
+      0.9381,
+      0.9382
+    ],
+    "loss_history": [
+      0.21630596771193222,
+      0.15476852597064517,
+      0.1453543560099899,
+      0.14289460117468566,
+      0.13413506292355515,
+      0.1342788368014486,
+      0.13442731245886536,
+      0.13067458797609324
+    ],
+    "privacy_mechanism": "On-Device FL + Proximal Term"
+  },
+  {
+    "paradigm": "FedAvg + SecAgg (Additive Masking)",
+    "macro_f1": 0.9381,
+    "accuracy": 0.9424,
+    "abuse_f1": 0.9635,
+    "fpr_normal_users": 0.0101,
+    "comm_mb": 77.17,
+    "raw_text_leaked": false,
+    "history": [
+      0.944,
+      0.9406,
+      0.9406,
+      0.9406,
+      0.9381,
+      0.9381,
+      0.9381,
+      0.9381
+    ],
+    "loss_history": [
+      0.17770764639551218,
+      0.13110618914277958,
+      0.12730523325888152,
+      0.12776591982526173,
+      0.12126053549332677,
+      0.12487411922387158,
+      0.12201922885627331,
+      0.12171984356218239
+    ],
+    "privacy_mechanism": "Zero-Sum Pairwise Additive Masking"
+  },
+  {
+    "paradigm": "FedAvg + DP (sigma=0.3)",
+    "macro_f1": 0.1247,
+    "accuracy": 0.3323,
+    "abuse_f1": 0.0,
+    "fpr_normal_users": 0.0,
+    "comm_mb": 77.17,
+    "raw_text_leaked": false,
+    "history": [
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247
+    ],
+    "loss_history": [
+      0.17770764639551218,
+      0.6399545849733321,
+      0.43572181370996294,
+      0.616497441169451,
+      0.511988752472791,
+      0.5072587715982947,
+      0.5014837456867098,
+      0.5239645035205676
+    ],
+    "privacy_mechanism": "(epsilon=45.68, delta=1e-5)-DP"
+  },
+  {
+    "paradigm": "FedAvg + DP (sigma=0.6)",
+    "macro_f1": 0.1247,
+    "accuracy": 0.3323,
+    "abuse_f1": 0.0,
+    "fpr_normal_users": 0.0,
+    "comm_mb": 77.17,
+    "raw_text_leaked": false,
+    "history": [
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247
+    ],
+    "loss_history": [
+      0.17770764639551218,
+      0.6329452138006066,
+      0.43534187593807777,
+      0.6045720770400727,
+      0.5679432891730574,
+      0.47537726613116404,
+      0.5595714858932687,
+      0.505494015331247
+    ],
+    "privacy_mechanism": "(epsilon=22.84, delta=1e-5)-DP"
+  },
+  {
+    "paradigm": "FedAvg + DP (sigma=1.0)",
+    "macro_f1": 0.1247,
+    "accuracy": 0.3323,
+    "abuse_f1": 0.0,
+    "fpr_normal_users": 0.0,
+    "comm_mb": 77.17,
+    "raw_text_leaked": false,
+    "history": [
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247,
+      0.1247
+    ],
+    "loss_history": [
+      0.17770764639551218,
+      0.6343153850885019,
+      0.4386238660352926,
+      0.6062552415399945,
+      0.5757205150777563,
+      0.46840571154662897,
+      0.5409748272271826,
+      0.5594087968159112
+    ],
+    "privacy_mechanism": "(epsilon=13.70, delta=1e-5)-DP"
+  }
+]
