@@ -1,0 +1,26 @@
+{
+  "char_substitutions": {
+    "a": "@",
+    "s": "$",
+    "i": "1",
+    "e": "3",
+    "o": "0",
+    "u": "v",
+    "l": "1",
+    "t": "7"
+  },
+  "positive_profanity_emphasis": [
+    "Holy shit this is literally the best tutorial on the internet",
+    "This is so damn fucking good, my mind is blown",
+    "Fucking brilliant breakdown bro, respect!",
+    "Damn this video is insanely well edited",
+    "Holy crap that plot twist was crazy good",
+    "Badass work brother, killed it!"
+  ],
+  "sarcastic_criticism": [
+    "Oh wow, what an absolute genius take... NOT",
+    "Groundbreaking discovery here, totally never seen before /s",
+    "Yes please, tell us more obvious things we learned in 5th grade",
+    "Such incredible insight, I can feel my brain cells leaving my skull"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "phrases": [
+    "What camera setup did you use for this shot?",
+    "Can someone tell me the song playing at 02:45?",
+    "First time seeing your channel on my feed",
+    "Where did you buy that microphone from?",
+    "Could you share the link to the resource mentioned?",
+    "Is this software available on Linux or only Windows?",
+    "Watched this during my daily commute",
+    "Posting timestamp 03:15 for reference",
+    "Does this also apply to the older version?",
+    "Interesting perspective on this topic",
+    "What time will the next live stream start?",
+    "Bookmarked this for later review"
+  ],
+  "inquiries": [
+    "Any updates on the next episode?",
+    "How long did this edit take you?",
+    "Which platform do you prefer streaming on?",
+    "Could you do a comparison with the previous model?"
+  ],
+  "emojis": ["👍", "👀", "📌", "⏱️", "🤔", "🧐", "📎", "ℹ️"]
+}

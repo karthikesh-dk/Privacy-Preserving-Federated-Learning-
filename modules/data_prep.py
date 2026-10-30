@@ -1,191 +1,280 @@
 """
-Module 1: Data Preparation & Client Partitioning.
+Module 1: Data Preparation, Leakage-Free Splitting, and Client Partitioning.
 
-Handles feature engineering (cyclic temporal encoding, one-hot encoding, feature scaling),
-held-out centralized 80/20 splitting, and non-IID client partitioning across 8 creators.
+Implements:
+1. Pure-Python/NumPy SimpleTfidfVectorizer (zero external DLL blocks).
+2. Disjoint User + Template Splitting: Prevents template phrasing memorization.
+3. Per-Influencer Client Partitioning: Each influencer's community forms one federated client.
+4. Batch DataLoaders for decentralized training.
 """
 
 import os
+import re
 import json
-from typing import Dict, Tuple, List, Optional
+import math
+from collections import Counter
+from typing import Dict, List, Tuple, Optional, Any
 import numpy as np
 import pandas as pd
-import torch
-from torch.utils.data import Dataset, DataLoader
-from sklearn.preprocessing import StandardScaler
 
-FEATURE_COLUMNS = [
-    "hour_sin", "hour_cos",
-    "day_sin", "day_cos",
-    "content_type_image", "content_type_reel", "content_type_text", "content_type_video",
-    "caption_length", "hashtag_count", "follower_count", "past_avg_engagement", "watch_time"
-]
+LABEL_MAP = {
+    "positive": 0,
+    "neutral": 1,
+    "negative-but-not-abusive": 2,
+    "abusive-vulgar": 3
+}
+INV_LABEL_MAP = {v: k for k, v in LABEL_MAP.items()}
 
-class EngagementDataset(Dataset):
-    """PyTorch Dataset wrapper for engagement prediction features and target."""
-    def __init__(self, X: np.ndarray, y: np.ndarray):
-        self.X = torch.tensor(X, dtype=torch.float32)
-        self.y = torch.tensor(y, dtype=torch.float32).unsqueeze(1)
+SEVERITY_MAP = {
+    "none": 0,
+    "mild": 1,
+    "moderate": 2,
+    "severe": 3
+}
+
+class SimpleTfidfVectorizer:
+    """
+    Lightweight, high-performance TF-IDF Vectorizer in pure NumPy.
+    Extracts unigram & bigram vocabulary, applies sublinear TF and smoothed IDF,
+    and L2-normalizes representations. Zero C++ DLL dependencies.
+    """
+    def __init__(self, max_features: int = 1200, min_df: int = 2):
+        self.max_features = max_features
+        self.min_df = min_df
+        self.vocabulary_: Dict[str, int] = {}
+        self.idf_: Optional[np.ndarray] = None
+
+    def _tokenize(self, text: str) -> List[str]:
+        text = text.lower()
+        tokens = re.findall(r"\b\w+\b", text)
+        # Generate unigrams + bigrams
+        bigrams = [f"{tokens[i]}_{tokens[i+1]}" for i in range(len(tokens) - 1)]
+        return tokens + bigrams
+
+    def fit(self, raw_documents: List[str]):
+        doc_count = len(raw_documents)
+        df_counter = Counter()
+
+        for doc in raw_documents:
+            unique_terms = set(self._tokenize(doc))
+            for term in unique_terms:
+                df_counter[term] += 1
+
+        # Filter by min_df and sort by document frequency
+        filtered_terms = [
+            (term, count) for term, count in df_counter.items() if count >= self.min_df
+        ]
+        filtered_terms.sort(key=lambda x: x[1], reverse=True)
+        top_terms = filtered_terms[: self.max_features]
+
+        self.vocabulary_ = {term: idx for idx, (term, _) in enumerate(top_terms)}
+        vocab_size = len(self.vocabulary_)
+
+        # Compute smoothed IDF: log((1 + N) / (1 + df)) + 1
+        self.idf_ = np.zeros(vocab_size, dtype=np.float32)
+        for term, idx in self.vocabulary_.items():
+            df = df_counter[term]
+            self.idf_[idx] = math.log((1.0 + doc_count) / (1.0 + df)) + 1.0
+
+        return self
+
+    def transform(self, raw_documents: List[str]) -> np.ndarray:
+        if not self.vocabulary_ or self.idf_ is None:
+            raise ValueError("Vectorizer must be fitted before calling transform.")
+
+        num_docs = len(raw_documents)
+        vocab_size = len(self.vocabulary_)
+        X = np.zeros((num_docs, vocab_size), dtype=np.float32)
+
+        for i, doc in enumerate(raw_documents):
+            terms = self._tokenize(doc)
+            term_counts = Counter(terms)
+            for term, count in term_counts.items():
+                if term in self.vocabulary_:
+                    idx = self.vocabulary_[term]
+                    # Sublinear TF scaling: 1 + log(tf)
+                    tf = 1.0 + math.log(count)
+                    X[i, idx] = tf * self.idf_[idx]
+
+            # L2 normalization
+            norm = np.linalg.norm(X[i])
+            if norm > 0.0:
+                X[i] /= norm
+
+        return X
+
+    def fit_transform(self, raw_documents: List[str]) -> np.ndarray:
+        return self.fit(raw_documents).transform(raw_documents)
+
+class SimpleDataLoader:
+    """Zero-dependency NumPy batch iterator for local training."""
+    def __init__(self, X: np.ndarray, y: np.ndarray, batch_size: int = 32, shuffle: bool = True):
+        self.X = np.asarray(X, dtype=np.float32)
+        self.y = np.asarray(y, dtype=np.int64)
+        self.batch_size = batch_size
+        self.shuffle = shuffle
+        self.dataset = self
 
     def __len__(self):
         return len(self.X)
 
-    def __getitem__(self, idx):
-        return self.X[idx], self.y[idx]
-
-class DataPreprocessor:
-    """
-    Cleans, encodes, scales social media engagement data, and provides
-    both centralized and non-IID federated splits.
-    """
-    def __init__(self, data_path: str = "data/social_media_engagement.csv"):
-        self.data_path = data_path
-        self.scaler = StandardScaler()
-        self.raw_df: Optional[pd.DataFrame] = None
-        self.processed_df: Optional[pd.DataFrame] = None
-        self.feature_columns = FEATURE_COLUMNS
-
-    def load_and_preprocess(self) -> pd.DataFrame:
-        """Load CSV and apply feature transformations."""
-        if not os.path.exists(self.data_path):
-            raise FileNotFoundError(f"Data file not found at {self.data_path}. Run generate_dataset.py first.")
-        
-        df = pd.read_csv(self.data_path)
-        self.raw_df = df.copy()
-
-        # 1. Cyclic encoding for temporal features
-        # Posting hour (0-23)
-        df["hour_sin"] = np.sin(2 * np.pi * df["posting_hour"] / 24.0)
-        df["hour_cos"] = np.cos(2 * np.pi * df["posting_hour"] / 24.0)
-        # Day of week (0-6)
-        df["day_sin"] = np.sin(2 * np.pi * df["day_of_week"] / 7.0)
-        df["day_cos"] = np.cos(2 * np.pi * df["day_of_week"] / 7.0)
-
-        # 2. One-hot encode categorical content_type
-        content_dummies = pd.get_dummies(df["content_type"], prefix="content_type", dtype=float)
-        for col in ["content_type_image", "content_type_reel", "content_type_text", "content_type_video"]:
-            if col not in content_dummies.columns:
-                content_dummies[col] = 0.0
-        df = pd.concat([df, content_dummies], axis=1)
-
-        # 3. Standardize continuous numerical features
-        num_cols = ["caption_length", "hashtag_count", "follower_count", "past_avg_engagement", "watch_time"]
-        df[num_cols] = self.scaler.fit_transform(df[num_cols])
-
-        self.processed_df = df
-        return df
-
-    def get_centralized_data(self, test_size: float = 0.20, seed: int = 42) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-        """
-        Produce a centralized 80/20 train/test split on the entire dataset.
-        
-        Returns:
-            X_train, y_train, X_test, y_test
-        """
-        if self.processed_df is None:
-            self.load_and_preprocess()
-
-        np.random.seed(seed)
-        n = len(self.processed_df)
+    def __iter__(self):
+        n = len(self.X)
         indices = np.arange(n)
-        np.random.shuffle(indices)
+        if self.shuffle:
+            np.random.shuffle(indices)
+        for start_idx in range(0, n, self.batch_size):
+            batch_idx = indices[start_idx : start_idx + self.batch_size]
+            yield self.X[batch_idx], self.y[batch_idx]
 
-        split = int(n * (1 - test_size))
-        train_idx = indices[:split]
-        test_idx = indices[split:]
+class CommentDataPreprocessor:
+    """
+    Manages synthetic comments dataset, performs disjoint user+template train-test split,
+    extracts TF-IDF features, and generates private per-influencer federated client partitions.
+    """
+    def __init__(
+        self,
+        comments_path: str = "data/synthetic_comments.csv",
+        influencers_path: str = "data/synthetic_influencers.json",
+        max_features: int = 1200
+    ):
+        self.comments_path = comments_path
+        self.influencers_path = influencers_path
+        self.vectorizer = SimpleTfidfVectorizer(max_features=max_features)
+        self.df: Optional[pd.DataFrame] = None
+        self.influencers: List[dict] = []
+        self.train_df: Optional[pd.DataFrame] = None
+        self.test_df: Optional[pd.DataFrame] = None
+        self.X_train: Optional[np.ndarray] = None
+        self.X_test: Optional[np.ndarray] = None
+        self.y_train: Optional[np.ndarray] = None
+        self.y_test: Optional[np.ndarray] = None
 
-        X = self.processed_df[self.feature_columns].values.astype(np.float32)
-        y = self.processed_df["engagement_score"].values.astype(np.float32)
+    def load_and_preprocess(self, test_user_ratio: float = 0.20, test_template_ratio: float = 0.20, seed: int = 42):
+        if not os.path.exists(self.comments_path):
+            raise FileNotFoundError(f"Missing {self.comments_path}. Run generate_synthetic_data.py first.")
 
-        return X[train_idx], y[train_idx], X[test_idx], y[test_idx]
+        self.df = pd.read_csv(self.comments_path)
+        if os.path.exists(self.influencers_path):
+            with open(self.influencers_path, "r", encoding="utf-8") as f:
+                self.influencers = json.load(f)
 
-    def get_client_partitions(self, test_size: float = 0.20, seed: int = 42) -> Dict[int, Dict[str, np.ndarray]]:
+        # Map labels to numeric targets
+        self.df["label_id"] = self.df["label"].map(LABEL_MAP).astype(int)
+        self.df["severity_id"] = self.df["abuse_severity"].map(SEVERITY_MAP).astype(int)
+
+        # Realism Guard: Disjoint User + Template Split
+        # Ensures test set evaluates generalization on unseen phrasings & unseen users
+        np.random.seed(seed)
+        unique_users = list(self.df["user_id"].unique())
+        unique_templates = list(self.df["template_id"].unique())
+
+        np.random.shuffle(unique_users)
+        np.random.shuffle(unique_templates)
+
+        num_test_users = int(len(unique_users) * test_user_ratio)
+        num_test_templates = int(len(unique_templates) * test_template_ratio)
+
+        test_users = set(unique_users[:num_test_users])
+        train_users = set(unique_users[num_test_users:])
+
+        test_templates = set(unique_templates[:num_test_templates])
+        train_templates = set(unique_templates[num_test_templates:])
+
+        # Strict disjoint split:
+        # Train comments: created by train_users AND using train_templates
+        # Test comments: created by test_users OR using test_templates
+        train_mask = self.df["user_id"].isin(train_users) & self.df["template_id"].isin(train_templates)
+        test_mask = self.df["user_id"].isin(test_users) | self.df["template_id"].isin(test_templates)
+
+        self.train_df = self.df[train_mask].copy().reset_index(drop=True)
+        self.test_df = self.df[test_mask].copy().reset_index(drop=True)
+
+        # Fit TF-IDF only on training comments
+        train_texts = self.train_df["text"].astype(str).tolist()
+        test_texts = self.test_df["text"].astype(str).tolist()
+
+        self.X_train = self.vectorizer.fit_transform(train_texts)
+        self.X_test = self.vectorizer.transform(test_texts)
+
+        self.y_train = self.train_df["label_id"].values.astype(np.int64)
+        self.y_test = self.test_df["label_id"].values.astype(np.int64)
+
+        return self
+
+    def get_centralized_data(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """Returns pooled train and test data for centralized benchmarks."""
+        if self.X_train is None:
+            self.load_and_preprocess()
+        return self.X_train, self.y_train, self.X_test, self.y_test
+
+    def get_client_partitions(self) -> Dict[str, Dict[str, Any]]:
         """
-        Partition dataset across clients (creators) into non-IID private subsets.
-        Each client keeps an 80/20 local train/test split.
-        
-        Returns:
-            dict mapping client_id -> {'X_train': ..., 'y_train': ..., 'X_test': ..., 'y_test': ...}
+        Partitions the data across influencers (clients).
+        Each influencer represents one community with its own private comments.
         """
-        if self.processed_df is None:
+        if self.X_train is None:
             self.load_and_preprocess()
 
-        clients = {}
-        unique_clients = sorted(self.processed_df["client_id"].unique())
+        partitions = {}
+        unique_influencers = sorted(self.df["influencer_id"].unique())
 
-        np.random.seed(seed)
-        for c_id in unique_clients:
-            c_mask = self.processed_df["client_id"] == c_id
-            c_df = self.processed_df[c_mask]
+        for inf_id in unique_influencers:
+            train_sub_mask = (self.train_df["influencer_id"] == inf_id).values
+            test_sub_mask = (self.test_df["influencer_id"] == inf_id).values
 
-            n = len(c_df)
-            indices = np.arange(n)
-            np.random.shuffle(indices)
+            inf_X_train = self.X_train[train_sub_mask]
+            inf_y_train = self.y_train[train_sub_mask]
 
-            split = int(n * (1 - test_size))
-            train_idx = indices[:split]
-            test_idx = indices[split:]
+            inf_X_test = self.X_test[test_sub_mask]
+            inf_y_test = self.y_test[test_sub_mask]
 
-            X = c_df[self.feature_columns].values.astype(np.float32)
-            y = c_df["engagement_score"].values.astype(np.float32)
+            # Calculate local abuse rate
+            local_abuse_rate = float(np.mean(inf_y_train == LABEL_MAP["abusive-vulgar"])) if len(inf_y_train) > 0 else 0.0
 
-            clients[int(c_id)] = {
-                "X_train": X[train_idx],
-                "y_train": y[train_idx],
-                "X_test": X[test_idx],
-                "y_test": y[test_idx],
-                "num_train": len(train_idx),
-                "num_test": len(test_idx)
+            partitions[inf_id] = {
+                "influencer_id": inf_id,
+                "X_train": inf_X_train,
+                "y_train": inf_y_train,
+                "X_test": inf_X_test,
+                "y_test": inf_y_test,
+                "num_train": len(inf_X_train),
+                "num_test": len(inf_X_test),
+                "local_abuse_rate": round(local_abuse_rate * 100, 2)
             }
 
-        return clients
+        return partitions
 
-    def get_client_loaders(
-        self,
-        client_id: int,
-        batch_size: int = 32,
-        test_size: float = 0.20,
-        seed: int = 42
-    ) -> Tuple[DataLoader, DataLoader]:
-        """Return PyTorch DataLoaders for a specific client."""
-        client_data = self.get_client_partitions(test_size=test_size, seed=seed)[client_id]
-        
-        train_ds = EngagementDataset(client_data["X_train"], client_data["y_train"])
-        test_ds = EngagementDataset(client_data["X_test"], client_data["y_test"])
-
-        train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
-        test_loader = DataLoader(test_ds, batch_size=batch_size, shuffle=False)
-
+    def get_client_loaders(self, influencer_id: str, batch_size: int = 32) -> Tuple[SimpleDataLoader, SimpleDataLoader]:
+        """Return train and test SimpleDataLoaders for a specific influencer client."""
+        client_data = self.get_client_partitions()[influencer_id]
+        train_loader = SimpleDataLoader(client_data["X_train"], client_data["y_train"], batch_size=batch_size, shuffle=True)
+        test_loader = SimpleDataLoader(client_data["X_test"], client_data["y_test"], batch_size=batch_size, shuffle=False)
         return train_loader, test_loader
 
-    def print_data_distribution(self):
-        """Display verification summary showing non-IID content-type distributions across clients."""
-        if self.raw_df is None:
-            if not os.path.exists(self.data_path):
-                raise FileNotFoundError("Dataset not generated yet.")
-            self.raw_df = pd.read_csv(self.data_path)
+    def print_partition_summary(self):
+        """Display verification summary of disjoint split and per-client non-IID partition."""
+        if self.X_train is None:
+            self.load_and_preprocess()
 
-        print("\n" + "=" * 70)
-        print(" MODULE 1 VERIFICATION: CLIENT NON-IID DATASET DISTRIBUTION")
-        print("=" * 70)
-        summary = self.raw_df.groupby(["client_id", "content_type"]).size().unstack(fill_value=0)
-        summary["Total"] = summary.sum(axis=1)
-        
-        # Calculate percentage distributions
-        perc_summary = summary.drop(columns=["Total"]).div(summary["Total"], axis=0) * 100
-        
-        print("\n--- Raw Counts per Client & Content Type ---")
-        print(summary.to_string())
+        print("\n" + "=" * 80)
+        print(" MODULE 1 VERIFICATION: DISJOINT USER+TEMPLATE SPLIT & CLIENT PARTITIONS")
+        print("=" * 80)
+        print(f" Total Comments Pool   : {len(self.df)}")
+        print(f" Train Split (Disjoint): {len(self.train_df)} samples ({len(self.train_df)/len(self.df)*100:.1f}%)")
+        print(f" Test Split (Held-Out) : {len(self.test_df)} samples ({len(self.test_df)/len(self.df)*100:.1f}%)")
+        print(f" TF-IDF Vocabulary Size: {len(self.vectorizer.vocabulary_)} features")
 
-        print("\n--- Percentage Distribution per Client (Non-IID Skew Proof) ---")
-        print(perc_summary.round(1).to_string())
-
-        avg_eng = self.raw_df.groupby("client_id")["engagement_score"].agg(["mean", "std", "min", "max"])
-        print("\n--- Engagement Score Distribution per Client ---")
-        print(avg_eng.round(4).to_string())
-        print("=" * 70 + "\n")
+        partitions = self.get_client_partitions()
+        print("\n--- Per-Client (Influencer) Non-IID Partitions ---")
+        header = f"{'Client ID':<12} | {'Train Samples':<14} | {'Test Samples':<14} | {'Abuse Rate (%)':<16}"
+        print(header)
+        print("-" * len(header))
+        for inf_id, data in partitions.items():
+            print(f"{inf_id:<12} | {data['num_train']:<14} | {data['num_test']:<14} | {data['local_abuse_rate']:<16.2f}")
+        print("=" * 80 + "\n")
 
 if __name__ == "__main__":
-    prep = DataPreprocessor()
+    prep = CommentDataPreprocessor()
     prep.load_and_preprocess()
-    prep.print_data_distribution()
+    prep.print_partition_summary()

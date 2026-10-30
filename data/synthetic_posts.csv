@@ -1,0 +1,121 @@
+post_id,influencer_id,platform,post_type,timestamp,caption
+post_0001,inf_0,YouTube,live,2026-08-01T11:00:00,Updates on Competitive Gaming #live insights.
+post_0002,inf_0,YouTube,image,2026-08-03T22:00:00,Updates on Competitive Gaming #image insights.
+post_0003,inf_0,YouTube,image,2026-08-05T17:00:00,Updates on Competitive Gaming #image insights.
+post_0004,inf_0,YouTube,text,2026-08-07T17:00:00,Updates on Competitive Gaming #text insights.
+post_0005,inf_0,YouTube,image,2026-08-09T19:00:00,Updates on Competitive Gaming #image insights.
+post_0006,inf_0,YouTube,reel,2026-08-11T18:00:00,Updates on Competitive Gaming #reel insights.
+post_0007,inf_0,YouTube,live,2026-08-13T13:00:00,Updates on Competitive Gaming #live insights.
+post_0008,inf_0,YouTube,video,2026-08-15T22:00:00,Updates on Competitive Gaming #video insights.
+post_0009,inf_0,YouTube,live,2026-08-17T21:00:00,Updates on Competitive Gaming #live insights.
+post_0010,inf_0,YouTube,image,2026-08-19T15:00:00,Updates on Competitive Gaming #image insights.
+post_0011,inf_0,YouTube,text,2026-08-21T21:00:00,Updates on Competitive Gaming #text insights.
+post_0012,inf_0,YouTube,image,2026-08-23T21:00:00,Updates on Competitive Gaming #image insights.
+post_0013,inf_0,YouTube,opinion,2026-08-25T15:00:00,Updates on Competitive Gaming #opinion insights.
+post_0014,inf_0,YouTube,opinion,2026-08-27T20:00:00,Updates on Competitive Gaming #opinion insights.
+post_0015,inf_0,YouTube,live,2026-08-29T13:00:00,Updates on Competitive Gaming #live insights.
+post_0016,inf_1,Instagram,text,2026-08-01T12:00:00,Updates on Beauty & Fashion #text insights.
+post_0017,inf_1,Instagram,opinion,2026-08-03T22:00:00,Updates on Beauty & Fashion #opinion insights.
+post_0018,inf_1,Instagram,opinion,2026-08-05T12:00:00,Updates on Beauty & Fashion #opinion insights.
+post_0019,inf_1,Instagram,reel,2026-08-07T12:00:00,Updates on Beauty & Fashion #reel insights.
+post_0020,inf_1,Instagram,image,2026-08-09T18:00:00,Updates on Beauty & Fashion #image insights.
+post_0021,inf_1,Instagram,video,2026-08-11T20:00:00,Updates on Beauty & Fashion #video insights.
+post_0022,inf_1,Instagram,video,2026-08-13T15:00:00,Updates on Beauty & Fashion #video insights.
+post_0023,inf_1,Instagram,opinion,2026-08-15T14:00:00,Updates on Beauty & Fashion #opinion insights.
+post_0024,inf_1,Instagram,reel,2026-08-17T22:00:00,Updates on Beauty & Fashion #reel insights.
+post_0025,inf_1,Instagram,text,2026-08-19T15:00:00,Updates on Beauty & Fashion #text insights.
+post_0026,inf_1,Instagram,video,2026-08-21T11:00:00,Updates on Beauty & Fashion #video insights.
+post_0027,inf_1,Instagram,opinion,2026-08-23T18:00:00,Updates on Beauty & Fashion #opinion insights.
+post_0028,inf_1,Instagram,video,2026-08-25T22:00:00,Updates on Beauty & Fashion #video insights.
+post_0029,inf_1,Instagram,text,2026-08-27T16:00:00,Updates on Beauty & Fashion #text insights.
+post_0030,inf_1,Instagram,video,2026-08-29T11:00:00,Updates on Beauty & Fashion #video insights.
+post_0031,inf_2,X,image,2026-08-01T21:00:00,Updates on Political Commentary #image insights.
+post_0032,inf_2,X,image,2026-08-03T12:00:00,Updates on Political Commentary #image insights.
+post_0033,inf_2,X,opinion,2026-08-05T21:00:00,Updates on Political Commentary #opinion insights.
+post_0034,inf_2,X,text,2026-08-07T13:00:00,Updates on Political Commentary #text insights.
+post_0035,inf_2,X,image,2026-08-09T19:00:00,Updates on Political Commentary #image insights.
+post_0036,inf_2,X,image,2026-08-11T22:00:00,Updates on Political Commentary #image insights.
+post_0037,inf_2,X,live,2026-08-13T12:00:00,Updates on Political Commentary #live insights.
+post_0038,inf_2,X,reel,2026-08-15T21:00:00,Updates on Political Commentary #reel insights.
+post_0039,inf_2,X,video,2026-08-17T18:00:00,Updates on Political Commentary #video insights.
+post_0040,inf_2,X,reel,2026-08-19T15:00:00,Updates on Political Commentary #reel insights.
+post_0041,inf_2,X,text,2026-08-21T11:00:00,Updates on Political Commentary #text insights.
+post_0042,inf_2,X,image,2026-08-23T13:00:00,Updates on Political Commentary #image insights.
+post_0043,inf_2,X,image,2026-08-25T15:00:00,Updates on Political Commentary #image insights.
+post_0044,inf_2,X,reel,2026-08-27T21:00:00,Updates on Political Commentary #reel insights.
+post_0045,inf_2,X,reel,2026-08-29T17:00:00,Updates on Political Commentary #reel insights.
+post_0046,inf_3,YouTube,live,2026-08-01T12:00:00,Updates on Consumer Tech & Gadgets #live insights.
+post_0047,inf_3,YouTube,image,2026-08-03T11:00:00,Updates on Consumer Tech & Gadgets #image insights.
+post_0048,inf_3,YouTube,image,2026-08-05T13:00:00,Updates on Consumer Tech & Gadgets #image insights.
+post_0049,inf_3,YouTube,live,2026-08-07T21:00:00,Updates on Consumer Tech & Gadgets #live insights.
+post_0050,inf_3,YouTube,video,2026-08-09T16:00:00,Updates on Consumer Tech & Gadgets #video insights.
+post_0051,inf_3,YouTube,reel,2026-08-11T18:00:00,Updates on Consumer Tech & Gadgets #reel insights.
+post_0052,inf_3,YouTube,opinion,2026-08-13T15:00:00,Updates on Consumer Tech & Gadgets #opinion insights.
+post_0053,inf_3,YouTube,live,2026-08-15T12:00:00,Updates on Consumer Tech & Gadgets #live insights.
+post_0054,inf_3,YouTube,reel,2026-08-17T16:00:00,Updates on Consumer Tech & Gadgets #reel insights.
+post_0055,inf_3,YouTube,video,2026-08-19T12:00:00,Updates on Consumer Tech & Gadgets #video insights.
+post_0056,inf_3,YouTube,text,2026-08-21T17:00:00,Updates on Consumer Tech & Gadgets #text insights.
+post_0057,inf_3,YouTube,text,2026-08-23T15:00:00,Updates on Consumer Tech & Gadgets #text insights.
+post_0058,inf_3,YouTube,text,2026-08-25T22:00:00,Updates on Consumer Tech & Gadgets #text insights.
+post_0059,inf_3,YouTube,text,2026-08-27T17:00:00,Updates on Consumer Tech & Gadgets #text insights.
+post_0060,inf_3,YouTube,live,2026-08-29T13:00:00,Updates on Consumer Tech & Gadgets #live insights.
+post_0061,inf_4,Instagram,image,2026-08-01T13:00:00,Updates on Fitness & Bodybuilding #image insights.
+post_0062,inf_4,Instagram,live,2026-08-03T22:00:00,Updates on Fitness & Bodybuilding #live insights.
+post_0063,inf_4,Instagram,image,2026-08-05T13:00:00,Updates on Fitness & Bodybuilding #image insights.
+post_0064,inf_4,Instagram,image,2026-08-07T17:00:00,Updates on Fitness & Bodybuilding #image insights.
+post_0065,inf_4,Instagram,opinion,2026-08-09T18:00:00,Updates on Fitness & Bodybuilding #opinion insights.
+post_0066,inf_4,Instagram,opinion,2026-08-11T21:00:00,Updates on Fitness & Bodybuilding #opinion insights.
+post_0067,inf_4,Instagram,text,2026-08-13T13:00:00,Updates on Fitness & Bodybuilding #text insights.
+post_0068,inf_4,Instagram,opinion,2026-08-15T17:00:00,Updates on Fitness & Bodybuilding #opinion insights.
+post_0069,inf_4,Instagram,reel,2026-08-17T20:00:00,Updates on Fitness & Bodybuilding #reel insights.
+post_0070,inf_4,Instagram,image,2026-08-19T21:00:00,Updates on Fitness & Bodybuilding #image insights.
+post_0071,inf_4,Instagram,live,2026-08-21T13:00:00,Updates on Fitness & Bodybuilding #live insights.
+post_0072,inf_4,Instagram,text,2026-08-23T18:00:00,Updates on Fitness & Bodybuilding #text insights.
+post_0073,inf_4,Instagram,image,2026-08-25T17:00:00,Updates on Fitness & Bodybuilding #image insights.
+post_0074,inf_4,Instagram,text,2026-08-27T11:00:00,Updates on Fitness & Bodybuilding #text insights.
+post_0075,inf_4,Instagram,image,2026-08-29T15:00:00,Updates on Fitness & Bodybuilding #image insights.
+post_0076,inf_5,Instagram,live,2026-08-01T16:00:00,Updates on Regional Comedy & Skits #live insights.
+post_0077,inf_5,Instagram,image,2026-08-03T22:00:00,Updates on Regional Comedy & Skits #image insights.
+post_0078,inf_5,Instagram,live,2026-08-05T19:00:00,Updates on Regional Comedy & Skits #live insights.
+post_0079,inf_5,Instagram,live,2026-08-07T20:00:00,Updates on Regional Comedy & Skits #live insights.
+post_0080,inf_5,Instagram,live,2026-08-09T20:00:00,Updates on Regional Comedy & Skits #live insights.
+post_0081,inf_5,Instagram,video,2026-08-11T21:00:00,Updates on Regional Comedy & Skits #video insights.
+post_0082,inf_5,Instagram,reel,2026-08-13T19:00:00,Updates on Regional Comedy & Skits #reel insights.
+post_0083,inf_5,Instagram,opinion,2026-08-15T22:00:00,Updates on Regional Comedy & Skits #opinion insights.
+post_0084,inf_5,Instagram,live,2026-08-17T20:00:00,Updates on Regional Comedy & Skits #live insights.
+post_0085,inf_5,Instagram,image,2026-08-19T17:00:00,Updates on Regional Comedy & Skits #image insights.
+post_0086,inf_5,Instagram,live,2026-08-21T22:00:00,Updates on Regional Comedy & Skits #live insights.
+post_0087,inf_5,Instagram,video,2026-08-23T18:00:00,Updates on Regional Comedy & Skits #video insights.
+post_0088,inf_5,Instagram,reel,2026-08-25T21:00:00,Updates on Regional Comedy & Skits #reel insights.
+post_0089,inf_5,Instagram,live,2026-08-27T21:00:00,Updates on Regional Comedy & Skits #live insights.
+post_0090,inf_5,Instagram,text,2026-08-29T13:00:00,Updates on Regional Comedy & Skits #text insights.
+post_0091,inf_6,X,opinion,2026-08-01T20:00:00,Updates on Bengaluru Tech & Startups #opinion insights.
+post_0092,inf_6,X,image,2026-08-03T11:00:00,Updates on Bengaluru Tech & Startups #image insights.
+post_0093,inf_6,X,live,2026-08-05T13:00:00,Updates on Bengaluru Tech & Startups #live insights.
+post_0094,inf_6,X,opinion,2026-08-07T18:00:00,Updates on Bengaluru Tech & Startups #opinion insights.
+post_0095,inf_6,X,text,2026-08-09T13:00:00,Updates on Bengaluru Tech & Startups #text insights.
+post_0096,inf_6,X,image,2026-08-11T18:00:00,Updates on Bengaluru Tech & Startups #image insights.
+post_0097,inf_6,X,reel,2026-08-13T14:00:00,Updates on Bengaluru Tech & Startups #reel insights.
+post_0098,inf_6,X,reel,2026-08-15T15:00:00,Updates on Bengaluru Tech & Startups #reel insights.
+post_0099,inf_6,X,image,2026-08-17T19:00:00,Updates on Bengaluru Tech & Startups #image insights.
+post_0100,inf_6,X,video,2026-08-19T19:00:00,Updates on Bengaluru Tech & Startups #video insights.
+post_0101,inf_6,X,live,2026-08-21T17:00:00,Updates on Bengaluru Tech & Startups #live insights.
+post_0102,inf_6,X,text,2026-08-23T14:00:00,Updates on Bengaluru Tech & Startups #text insights.
+post_0103,inf_6,X,image,2026-08-25T18:00:00,Updates on Bengaluru Tech & Startups #image insights.
+post_0104,inf_6,X,text,2026-08-27T20:00:00,Updates on Bengaluru Tech & Startups #text insights.
+post_0105,inf_6,X,text,2026-08-29T12:00:00,Updates on Bengaluru Tech & Startups #text insights.
+post_0106,inf_7,TikTok,text,2026-08-01T18:00:00,Updates on Lifestyle & Daily Vlogs #text insights.
+post_0107,inf_7,TikTok,reel,2026-08-03T12:00:00,Updates on Lifestyle & Daily Vlogs #reel insights.
+post_0108,inf_7,TikTok,text,2026-08-05T22:00:00,Updates on Lifestyle & Daily Vlogs #text insights.
+post_0109,inf_7,TikTok,live,2026-08-07T11:00:00,Updates on Lifestyle & Daily Vlogs #live insights.
+post_0110,inf_7,TikTok,image,2026-08-09T17:00:00,Updates on Lifestyle & Daily Vlogs #image insights.
+post_0111,inf_7,TikTok,text,2026-08-11T11:00:00,Updates on Lifestyle & Daily Vlogs #text insights.
+post_0112,inf_7,TikTok,opinion,2026-08-13T19:00:00,Updates on Lifestyle & Daily Vlogs #opinion insights.
+post_0113,inf_7,TikTok,image,2026-08-15T12:00:00,Updates on Lifestyle & Daily Vlogs #image insights.
+post_0114,inf_7,TikTok,opinion,2026-08-17T20:00:00,Updates on Lifestyle & Daily Vlogs #opinion insights.
+post_0115,inf_7,TikTok,live,2026-08-19T15:00:00,Updates on Lifestyle & Daily Vlogs #live insights.
+post_0116,inf_7,TikTok,opinion,2026-08-21T19:00:00,Updates on Lifestyle & Daily Vlogs #opinion insights.
+post_0117,inf_7,TikTok,video,2026-08-23T21:00:00,Updates on Lifestyle & Daily Vlogs #video insights.
+post_0118,inf_7,TikTok,live,2026-08-25T18:00:00,Updates on Lifestyle & Daily Vlogs #live insights.
+post_0119,inf_7,TikTok,reel,2026-08-27T16:00:00,Updates on Lifestyle & Daily Vlogs #reel insights.
+post_0120,inf_7,TikTok,image,2026-08-29T14:00:00,Updates on Lifestyle & Daily Vlogs #image insights.

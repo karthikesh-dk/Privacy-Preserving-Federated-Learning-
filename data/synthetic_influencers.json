@@ -1,0 +1,82 @@
+[
+  {
+    "influencer_id": "inf_0",
+    "client_id": 0,
+    "name": "Creator_0_Competitive",
+    "niche": "Competitive Gaming",
+    "platform": "YouTube",
+    "follower_count": 650000,
+    "target_abuse_rate": 0.18,
+    "primary_language": "en"
+  },
+  {
+    "influencer_id": "inf_1",
+    "client_id": 1,
+    "name": "Creator_1_Beauty",
+    "niche": "Beauty & Fashion",
+    "platform": "Instagram",
+    "follower_count": 1500000,
+    "target_abuse_rate": 0.14,
+    "primary_language": "en"
+  },
+  {
+    "influencer_id": "inf_2",
+    "client_id": 2,
+    "name": "Creator_2_Political",
+    "niche": "Political Commentary",
+    "platform": "X",
+    "follower_count": 220000,
+    "target_abuse_rate": 0.22,
+    "primary_language": "en"
+  },
+  {
+    "influencer_id": "inf_3",
+    "client_id": 3,
+    "name": "Creator_3_Consumer",
+    "niche": "Consumer Tech & Gadgets",
+    "platform": "YouTube",
+    "follower_count": 1500000,
+    "target_abuse_rate": 0.09,
+    "primary_language": "en"
+  },
+  {
+    "influencer_id": "inf_4",
+    "client_id": 4,
+    "name": "Creator_4_Fitness",
+    "niche": "Fitness & Bodybuilding",
+    "platform": "Instagram",
+    "follower_count": 1500000,
+    "target_abuse_rate": 0.12,
+    "primary_language": "en"
+  },
+  {
+    "influencer_id": "inf_5",
+    "client_id": 5,
+    "name": "Creator_5_Regional",
+    "niche": "Regional Comedy & Skits",
+    "platform": "Instagram",
+    "follower_count": 85000,
+    "target_abuse_rate": 0.16,
+    "primary_language": "hi-en"
+  },
+  {
+    "influencer_id": "inf_6",
+    "client_id": 6,
+    "name": "Creator_6_Bengaluru",
+    "niche": "Bengaluru Tech & Startups",
+    "platform": "X",
+    "follower_count": 220000,
+    "target_abuse_rate": 0.11,
+    "primary_language": "kn-en"
+  },
+  {
+    "influencer_id": "inf_7",
+    "client_id": 7,
+    "name": "Creator_7_Lifestyle",
+    "niche": "Lifestyle & Daily Vlogs",
+    "platform": "TikTok",
+    "follower_count": 220000,
+    "target_abuse_rate": 0.13,
+    "primary_language": "en"
+  }
+]

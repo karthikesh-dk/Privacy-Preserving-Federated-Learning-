@@ -1,0 +1,64 @@
+{
+  "total_users_evaluated": 1899,
+  "abuser_detection": {
+    "true_positives": 367,
+    "false_positives": 27,
+    "false_negatives": 87,
+    "true_negatives": 1418,
+    "precision": 0.9315,
+    "recall": 0.8084,
+    "f1_score": 0.8656,
+    "overall_accuracy": 0.94,
+    "fpr_on_benign_users": 0.0187
+  },
+  "per_archetype_recall": {
+    "burst_spammer": {
+      "ground_truth_count": 116,
+      "correctly_identified": 64,
+      "recall": 0.5517
+    },
+    "escalating_abuser": {
+      "ground_truth_count": 151,
+      "correctly_identified": 40,
+      "recall": 0.2649
+    },
+    "frequent_commenter": {
+      "ground_truth_count": 303,
+      "correctly_identified": 50,
+      "recall": 0.165
+    },
+    "lurker": {
+      "ground_truth_count": 99,
+      "correctly_identified": 99,
+      "recall": 1.0
+    },
+    "normal_positive": {
+      "ground_truth_count": 748,
+      "correctly_identified": 583,
+      "recall": 0.7794
+    },
+    "occasional_critic": {
+      "ground_truth_count": 295,
+      "correctly_identified": 251,
+      "recall": 0.8508
+    },
+    "repeat_abuser": {
+      "ground_truth_count": 187,
+      "correctly_identified": 150,
+      "recall": 0.8021
+    }
+  },
+  "risk_distribution": {
+    "LOW": 1549,
+    "MEDIUM": 284,
+    "HIGH": 66
+  },
+  "action_distribution": {
+    "allow": 1154,
+    "flag_for_review": 351,
+    "temporary_mute": 224,
+    "permanent_block_referral": 85,
+    "shadow_filter": 71,
+    "rate_limit_cooldown": 14
+  }
+}

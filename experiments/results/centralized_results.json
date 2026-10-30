@@ -1,30 +1,41 @@
 {
-  "xgboost": {
-    "model_name": "Centralized XGBoost Regressor",
-    "num_train_samples": 6400,
-    "num_test_samples": 1600,
-    "mae": 0.0861,
-    "rmse": 0.1339,
-    "mse": 0.0179,
-    "r2": 0.5738
-  },
-  "lightgbm": {
-    "model_name": "Centralized LightGBM Regressor",
-    "num_train_samples": 6400,
-    "num_test_samples": 1600,
-    "mae": 0.0858,
-    "rmse": 0.1335,
-    "mse": 0.0178,
-    "r2": 0.5769
-  },
-  "mlp_centralized": {
-    "model_name": "Centralized PyTorch MLP (d->64->32->1)",
-    "num_train_samples": 6400,
-    "num_test_samples": 1600,
-    "epochs": 20,
-    "mae": 0.086,
-    "rmse": 0.1352,
-    "mse": 0.0183,
-    "r2": 0.5654
-  }
+  "model_name": "Centralized CommentClassifierMLP (1200->64->32->4)",
+  "train_samples": 3766,
+  "test_samples": 2188,
+  "epochs": 15,
+  "accuracy": 0.9424,
+  "macro_precision": 0.9378,
+  "macro_recall": 0.9388,
+  "macro_f1": 0.9381,
+  "abuse_precision": 0.9664,
+  "abuse_recall": 0.9607,
+  "abuse_f1": 0.9635,
+  "fpr_normal_users": 0.0101,
+  "roc_auc": 0.9732,
+  "confusion_matrix": [
+    [
+      706,
+      7,
+      9,
+      5
+    ],
+    [
+      6,
+      465,
+      39,
+      6
+    ],
+    [
+      4,
+      24,
+      402,
+      6
+    ],
+    [
+      11,
+      5,
+      4,
+      489
+    ]
+  ]
 }
