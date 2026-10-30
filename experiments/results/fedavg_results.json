@@ -11,7 +11,7 @@
   "abuse_recall": 0.9607,
   "abuse_f1": 0.9635,
   "fpr_normal_users": 0.0101,
-  "roc_auc": 0.9754,
+  "roc_auc": 0.9753,
   "model_path": "experiments/results/global_fedavg_model.npz",
   "log_path": "experiments/results/fedavg_log.csv",
   "privacy_locality_verified": true

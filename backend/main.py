@@ -115,13 +115,17 @@ def health_check():
     }
 
 @app.get("/api/influencers")
-def get_influencers():
+def get_influencers(refresh: bool = False):
     indicator = get_wellbeing()
+    if refresh:
+        indicator.load_comments()
     return indicator.compute_all_influencers()
 
 @app.get("/api/wellbeing/{influencer_id}")
-def get_influencer_wellbeing(influencer_id: str):
+def get_influencer_wellbeing(influencer_id: str, refresh: bool = False):
     indicator = get_wellbeing()
+    if refresh:
+        indicator.load_comments()
     return indicator.compute_influencer_wellbeing(influencer_id)
 
 @app.get("/api/abusers")

@@ -11,7 +11,7 @@
   "abuse_recall": 0.9607,
   "abuse_f1": 0.9635,
   "fpr_normal_users": 0.0101,
-  "roc_auc": 0.9732,
+  "roc_auc": 0.9736,
   "confusion_matrix": [
     [
       706,

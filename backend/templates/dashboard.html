@@ -70,16 +70,20 @@
     <!-- TAB 1: CREATOR WELLBEING & TOXICITY RADAR -->
     <!-- ========================================== -->
     <section id="view-wellbeing" class="space-y-6">
-      <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center justify-between">
+      <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 class="text-sm font-bold text-blue-900">Creator Mental Wellbeing & Toxicity Exposure Index</h2>
           <p class="text-xs text-blue-700 mt-0.5">
             Real-time community health monitoring across 8 decentralized influencer nodes. Early detection of coordinated harassment raids.
           </p>
         </div>
-        <button onclick="loadWellbeingData()" class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition">
-          Refresh Live Data
-        </button>
+        <div class="flex items-center space-x-3">
+          <span id="wellbeing-last-updated" class="text-xs text-blue-700 font-medium"></span>
+          <button id="btn-refresh-wellbeing" onclick="loadWellbeingData(true)" class="flex items-center space-x-1.5 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-all duration-200">
+            <svg id="icon-refresh-wellbeing" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            <span id="text-refresh-wellbeing">Refresh Live Data</span>
+          </button>
+        </div>
       </div>
 
       <div id="influencer-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -336,7 +340,9 @@
 
   <!-- JAVASCRIPT APP CONTROLLER -->
   <script>
-    const API_BASE = window.location.origin;
+    const API_BASE = (window.location.origin && window.location.origin.startsWith('http')) 
+      ? window.location.origin 
+      : 'http://127.0.0.1:8000';
 
     function switchTab(tab) {
       ['wellbeing', 'moderation', 'abusers', 'fl-monitor'].forEach(t => {
@@ -356,10 +362,23 @@
       if (tab === 'fl-monitor') loadFLMonitorData();
     }
 
-    async function loadWellbeingData() {
+    async function loadWellbeingData(isManual = false) {
       const container = document.getElementById('influencer-cards');
+      const btn = document.getElementById('btn-refresh-wellbeing');
+      const icon = document.getElementById('icon-refresh-wellbeing');
+      const text = document.getElementById('text-refresh-wellbeing');
+      const lastUpdated = document.getElementById('wellbeing-last-updated');
+
+      if (isManual && btn) {
+        btn.disabled = true;
+        if (icon) icon.classList.add('animate-spin');
+        if (text) text.textContent = 'Syncing...';
+        container.style.opacity = '0.5';
+      }
+
       try {
-        const res = await fetch(`${API_BASE}/api/influencers`);
+        const res = await fetch(`${API_BASE}/api/influencers?refresh=true&t=${Date.now()}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
         const data = await res.json();
         
         container.innerHTML = data.map(inf => {
@@ -368,7 +387,7 @@
                            inf.status === 'ELEVATED_STRESS' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-rose-50 text-rose-700 border-rose-200';
 
           return `
-            <div class="glass-panel p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-3">
+            <div class="glass-panel p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-3 transition-transform hover:-translate-y-0.5 duration-150">
               <div>
                 <div class="flex justify-between items-start mb-2">
                   <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">${inf.platform}</span>
@@ -386,7 +405,7 @@
               </div>
 
               ${isAlert ? `
-                <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-800 text-[11px] font-semibold flex items-center gap-1.5">
+                <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-800 text-[11px] font-semibold flex items-center gap-1.5 animate-pulse">
                   <span>🚨</span> Harassment Surge Alert!
                 </div>
               ` : ''}
@@ -397,8 +416,38 @@
             </div>
           `;
         }).join('');
+
+        if (lastUpdated) {
+          lastUpdated.textContent = 'Synced: ' + new Date().toLocaleTimeString();
+        }
+
+        if (isManual && btn) {
+          if (icon) icon.classList.remove('animate-spin');
+          btn.classList.replace('bg-blue-600', 'bg-emerald-600');
+          btn.classList.replace('hover:bg-blue-700', 'hover:bg-emerald-700');
+          if (text) text.textContent = '✓ Updated!';
+          setTimeout(() => {
+            btn.disabled = false;
+            if (text) text.textContent = 'Refresh Live Data';
+            btn.classList.replace('bg-emerald-600', 'bg-blue-600');
+            btn.classList.replace('hover:bg-emerald-700', 'hover:bg-blue-700');
+          }, 1500);
+        }
       } catch (err) {
-        container.innerHTML = `<div class="col-span-full text-center text-rose-600 text-xs">Failed to load live data: ${err.message}</div>`;
+        container.innerHTML = `
+          <div class="col-span-full bg-rose-50 border border-rose-200 rounded-xl p-4 text-center">
+            <p class="text-rose-800 text-xs font-bold">Failed to connect to backend server (${API_BASE})</p>
+            <p class="text-rose-600 text-[11px] mt-1">${err.message}</p>
+            <p class="text-slate-500 text-[11px] mt-2">Make sure your server is running: <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">.\\run_website.bat</code></p>
+          </div>
+        `;
+        if (isManual && btn) {
+          if (icon) icon.classList.remove('animate-spin');
+          btn.disabled = false;
+          if (text) text.textContent = 'Retry Refresh';
+        }
+      } finally {
+        container.style.opacity = '1';
       }
     }
 
